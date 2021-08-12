@@ -1,5 +1,5 @@
 import uuid
-from django.core import exceptions
+
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.conf import settings
@@ -23,7 +23,11 @@ class UserModelViewset(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
 
-    @action(methods=('get', 'patch'),detail=True, url_name='me', permission_classes=[permissions.IsAdminUser, IsSelf])
+    @action(
+        methods=('get', 'patch'),
+        detail=True, url_name='me',
+        permission_classes=[permissions.IsAdminUser, IsSelf]
+    )
     def user_own_profile(self, request):
         user = request.user
         serializer = UserModelSerializer(user).data
@@ -46,8 +50,8 @@ class SignupView(APIView):
                 is_active=False,
             )
             send_mail(
-                'Account verification',
-                f'Your activation key {confirmation_code}',
+                'Email confirmation',
+                f'Your confirmation code: {confirmation_code}',
                 settings.DEFAULT_FROM_EMAIL,
                 [email],
                 fail_silently=True,
@@ -68,21 +72,22 @@ class CodeConfirmView(APIView):
 
     def post(self, *args, **kwargs):
         serializer = CodeSerializer(data=self.request.data)
-        serializer.is_valid(raise_exception=True)
-        try:
+        if serializer.is_valid(raise_exception=True):
             user = User.objects.get(
-                email=serializer.data['email'],
-                confirmation_code=serializer.data['confirmation_code']
+                username=serializer.validated_data.get('username'),
+                confirmation_code=serializer.validated_data.get(
+                    'confirmation_code'
+                )
             )
-        except exceptions.ValidationError:
-            return Response(
-                data={'detail': 'Invalid email or code'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        else:
             user.is_active = True
             user.save()
             refresh_token = RefreshToken.for_user(user)
             return Response({
                 'token': str(refresh_token.access_token)
             })
+        return Response(
+            {
+                'resp': 'sth went wrong'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )

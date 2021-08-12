@@ -13,6 +13,7 @@ def username_is_not_me(value):
 
 class UserModelSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
+
     class Meta:
         model = User
         fields = (
@@ -21,12 +22,23 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True, validators=[username_is_not_me])
+    username = serializers.CharField(
+        required=True, validators=[username_is_not_me]
+    )
+
     class Meta:
         model = User
         fields = ('email', 'username')
 
 
-class CodeSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+class CodeSerializer(serializers.ModelSerializer):
+    username = serializers.SlugRelatedField(
+        slug_field='username',
+        required=True,
+        queryset=User.objects.all()
+    )
     confirmation_code = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username',)

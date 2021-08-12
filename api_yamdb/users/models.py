@@ -9,7 +9,6 @@ class User(AbstractUser):
         blank=True,
     )
     email = models.EmailField(
-        help_text='email address',
         unique=True,
     )
 
