@@ -43,10 +43,10 @@ class UserModelViewset(ModelViewSet):
     @action(
         methods=('get', 'patch'),
         detail=True, url_path='me',
-        permission_classes=[permissions.AllowAny]
+        permission_classes=[IsAdmin | IsSelf]
     )
     def user_own_profile(self, request):
-        instance = request.instance
+        instance = request.user
         serializer = self.get_serializer(instance=instance)
         self.check_object_permissions(request, instance)
         print(request)
@@ -109,4 +109,4 @@ class CodeConfirmView(APIView):
             token = AccessToken.for_user(user)
 
             return Response({'token': token.access_token}, status.HTTP_200_OK)
-        return Response('fail', status.HTTP_400_BAD_REQUEST)
+        return Response(data={'response': 'Something went wrong.'}, status=status.HTTP_400_BAD_REQUEST)
