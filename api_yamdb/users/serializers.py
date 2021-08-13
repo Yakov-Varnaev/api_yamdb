@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+
 User = get_user_model()
 
 
@@ -9,6 +10,16 @@ def username_is_not_me(value):
         raise serializers.ValidationError(
             'You cannot use `me` as your username'
         )
+
+
+def username_is_unique(value):
+    if User.objects.filter(username=value).exists():
+        raise serializers.ValidationError('This username already exists.')
+
+
+def username_exists(value):
+    if not User.objects.filter(username=value, is_active=False).exists():
+        raise 
 
 
 class UserModelSerializer(serializers.ModelSerializer):
@@ -23,7 +34,8 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 class SignUpSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        required=True, validators=[username_is_not_me]
+        required=True, 
+        validators=[username_is_not_me, username_is_unique]
     )
 
     class Meta:
@@ -32,13 +44,9 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class CodeSerializer(serializers.ModelSerializer):
-    username = serializers.SlugRelatedField(
-        slug_field='username',
-        required=True,
-        queryset=User.objects.all()
-    )
+    username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username', 'confirmation_code')
