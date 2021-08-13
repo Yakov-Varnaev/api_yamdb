@@ -23,13 +23,20 @@ def username_exists(value):
 
 
 class UserModelSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True)
+    username = serializers.CharField(required=True, validators=[username_is_unique])
 
     class Meta:
         model = User
         fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio'
+            'username', 'email', 'first_name', 'last_name', 'bio',
         )
+
+
+class FullUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
 
 
 class SignUpSerializer(serializers.ModelSerializer):

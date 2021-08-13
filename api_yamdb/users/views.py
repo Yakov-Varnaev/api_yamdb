@@ -5,34 +5,57 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer
-from .permissions import IsSelf
+from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer, FullUserSerializer
+from .permissions import IsSelf, IsAdmin
 
 User = get_user_model()
 
 
 class UserModelViewset(ModelViewSet):
     serializer_class = UserModelSerializer
-    queryset = User.objects.all()
-    permission_classes = (permissions.IsAdminUser,)
+    queryset = User.objects.filter(is_active=True)
+    permission_classes = [permissions.IsAdminUser | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
 
+
+    def get_serializer_class(self):
+        if (self.action == ('user_profile', 'user_own_profile')
+            or 'search' in self.request.query_params):
+            return FullUserSerializer
+        return self.serializer_class
+
+
+    @action(methods=('get', 'patch', 'delete'), url_path=r'^(?P<username>\w+)$',detail=True)
+    def user_profile(self, request, username=None):
+        user = get_object_or_404(self.queryset, username=username)
+        self.check_object_permissions(request, user)
+        serializer = self.get_serializer(instance=user)
+        return Response(serializer.data)
+
+
     @action(
         methods=('get', 'patch'),
-        detail=True, url_name='me',
-        permission_classes=[permissions.IsAdminUser, IsSelf]
+        detail=True, url_path='me',
+        permission_classes=[permissions.AllowAny]
     )
     def user_own_profile(self, request):
-        user = request.user
-        serializer = UserModelSerializer(user).data
-        return Response(data=serializer)
+        instance = request.instance
+        serializer = self.get_serializer(instance=instance)
+        self.check_object_permissions(request, instance)
+        print(request)
+        if self.request.method == 'PATCH':
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(email=instance.email, role=instance.role)
+        return Response(serializer.data)
 
 
 class SignupView(APIView):

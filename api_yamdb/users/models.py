@@ -16,11 +16,11 @@ class User(AbstractUser):
     class UserRole:
         USER = 'user'
         ADMIN = 'admin'
-        MODERATOR = 'moderator'
+        MODERATOR = 'admin'
         choices = [
-            (USER, 'user'),
-            (ADMIN, 'admin'),
-            (MODERATOR, 'moderator'),
+            (USER, USER),
+            (ADMIN, ADMIN),
+            (MODERATOR, MODERATOR),
         ]
 
     role = models.CharField(

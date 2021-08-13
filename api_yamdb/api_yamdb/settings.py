@@ -64,10 +64,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('Bearer', )
-}
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'
