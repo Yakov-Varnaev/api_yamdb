@@ -9,7 +9,7 @@ from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer, FullUserSerializer
 from .permissions import IsSelf, IsAdmin
@@ -75,7 +75,6 @@ class SignupView(APIView):
                 confirmation_code=confirmation_code,
                 is_active=False,
             )
-
             send_mail(
                 'Email confirmation',
                 f'Your confirmation code: {confirmation_code}',
@@ -107,7 +106,7 @@ class CodeConfirmView(APIView):
 
             user.is_active = True
             user.save()
-            token = RefreshToken.for_user(user)
+            token = AccessToken.for_user(user)
 
             return Response({'token': token.access_token}, status.HTTP_200_OK)
         return Response('fail', status.HTTP_400_BAD_REQUEST)
