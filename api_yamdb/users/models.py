@@ -16,20 +16,19 @@ class User(AbstractUser):
     class UserRole:
         USER = 'user'
         ADMIN = 'admin'
-        MODERATOR = 'admin'
+        MODERATOR = 'moderator'
         choices = [
-            (USER, USER),
-            (ADMIN, ADMIN),
-            (MODERATOR, MODERATOR),
+            ('user', 'user'),
+            ('admin', 'admin'),
+            ('moderator', 'moderator'),
         ]
 
     role = models.CharField(
         max_length=25,
         choices=UserRole.choices,
-        default=UserRole.USER,
+        default='user',
     )
     confirmation_code = models.UUIDField(
         unique=True,
         default=uuid.uuid4,
-        editable=False,
     )

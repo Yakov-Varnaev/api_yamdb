@@ -5,14 +5,14 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, permissions
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer, FullUserSerializer
-from .permissions import IsSelf, IsAdmin
+from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer
+from .permissions import IsAdmin, OnlyAdminCanChangeRole
 
 User = get_user_model()
 
@@ -24,38 +24,25 @@ class UserModelViewset(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
 
-
-    def get_serializer_class(self):
-        if (self.action == ('user_profile', 'user_own_profile')
-            or 'search' in self.request.query_params):
-            return FullUserSerializer
-        return self.serializer_class
-
-
-    @action(methods=('get', 'patch', 'delete'), url_path=r'^(?P<username>\w+)$',detail=True)
-    def user_profile(self, request, username=None):
-        user = get_object_or_404(self.queryset, username=username)
-        self.check_object_permissions(request, user)
-        serializer = self.get_serializer(instance=user)
-        return Response(serializer.data)
-
-
     @action(
         methods=('get', 'patch'),
-        detail=True, url_path='me',
-        permission_classes=[permissions.AllowAny]
+        detail=False, url_path='me', url_name='me',
+        permission_classes=[
+            permissions.IsAuthenticated,
+            OnlyAdminCanChangeRole
+        ]
     )
     def user_own_profile(self, request):
-        instance = request.instance
+        instance = request.user
         serializer = self.get_serializer(instance=instance)
-        self.check_object_permissions(request, instance)
-        print(request)
         if self.request.method == 'PATCH':
+            print(request.user.role)
+            self.check_object_permissions(request, instance)
             serializer = self.get_serializer(
-                instance, data=request.data, partial=True)
+                instance=instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
-            serializer.save(email=instance.email, role=instance.role)
-        return Response(serializer.data)
+            serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class SignupView(APIView):
@@ -75,7 +62,6 @@ class SignupView(APIView):
                 confirmation_code=confirmation_code,
                 is_active=False,
             )
-
             send_mail(
                 'Email confirmation',
                 f'Your confirmation code: {confirmation_code}',
@@ -95,19 +81,25 @@ class CodeConfirmView(APIView):
 
     def post(self, *args, **kwargs):
         serializer = CodeSerializer(data=self.request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             username = serializer.validated_data.get('username')
             confirmation_code = serializer.validated_data.get(
                 'confirmation_code')
 
             user = get_object_or_404(User, username=username)
 
-            if user.confirmation_code != confirmation_code:
-                return Response('Wrong confirmation code!', status.HTTP_400_BAD_REQUEST)
+            if f'{user.confirmation_code}' != confirmation_code:
+                return Response(
+                    'Wrong confirmation code!', status.HTTP_400_BAD_REQUEST
+                )
 
             user.is_active = True
             user.save()
             token = RefreshToken.for_user(user)
-
-            return Response({'token': token.access_token}, status.HTTP_200_OK)
-        return Response('fail', status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'token': str(token.access_token)},
+                status.HTTP_200_OK)
+        return Response(
+            data={'response': 'Something went wrong.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )

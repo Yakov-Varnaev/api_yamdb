@@ -17,31 +17,22 @@ def username_is_unique(value):
         raise serializers.ValidationError('This username already exists.')
 
 
-def username_exists(value):
-    if not User.objects.filter(username=value, is_active=False).exists():
-        raise 
-
-
 class UserModelSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(required=True, validators=[username_is_unique])
+    username = serializers.CharField(
+        required=True,
+        validators=[username_is_unique]
+    )
 
     class Meta:
         model = User
         fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio',
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
         )
-
-
-class FullUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'bio', 'role')
 
 
 class SignUpSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
-        required=True, 
+        required=True,
         validators=[username_is_not_me, username_is_unique]
     )
 
