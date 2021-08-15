@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer
+from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer, UserRoleReadOnly
 from .permissions import IsAdmin, OnlyAdminCanChangeRole
 
 User = get_user_model()
@@ -23,13 +23,19 @@ class UserModelViewset(ModelViewSet):
     permission_classes = [permissions.IsAdminUser | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
+    lookup_field = 'username'
+
+    def detail(self, request, username):
+        user = get_object_or_404(User, username=username)
+        serializer = self.get_serializer(instance=user)
+        return Response(serializer.data)
+        
 
     @action(
         methods=('get', 'patch'),
         detail=False, url_path='me', url_name='me',
         permission_classes=[
             permissions.IsAuthenticated,
-            OnlyAdminCanChangeRole
         ]
     )
     def user_own_profile(self, request):
@@ -38,11 +44,12 @@ class UserModelViewset(ModelViewSet):
         if self.request.method == 'PATCH':
             print(request.user.role)
             self.check_object_permissions(request, instance)
-            serializer = self.get_serializer(
+            serializer = UserRoleReadOnly(
                 instance=instance, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
+            serializer.is_valid()
             serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 
 class SignupView(APIView):

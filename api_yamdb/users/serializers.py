@@ -30,6 +30,20 @@ class UserModelSerializer(serializers.ModelSerializer):
         )
 
 
+class UserRoleReadOnly(serializers.ModelSerializer):
+    username = serializers.CharField(
+        required=True,
+        validators=[username_is_unique]
+    )
+    role = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
+        )
+
+
 class SignUpSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         required=True,
