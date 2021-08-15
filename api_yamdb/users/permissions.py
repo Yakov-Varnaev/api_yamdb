@@ -10,13 +10,3 @@ class IsAdmin(permissions.BasePermission):
                 or request.user.role == request.user.UserRole.ADMIN
             )
         return False
-
-
-class OnlyAdminCanChangeRole(permissions.BasePermission):
-
-    def has_object_permission(self, request, view, obj):
-        if obj.role == obj.UserRole.ADMIN:
-            return True
-        if 'role' not in request.data:
-            return True
-        return False

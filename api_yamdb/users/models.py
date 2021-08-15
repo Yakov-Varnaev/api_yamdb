@@ -6,8 +6,9 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     bio = models.TextField(
-        max_length=500,
+        max_length=100,
         blank=True,
+        null=True
     )
     email = models.EmailField(
         unique=True,
