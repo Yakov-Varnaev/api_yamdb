@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-
 User = get_user_model()
 
 
@@ -22,20 +21,6 @@ class UserModelSerializer(serializers.ModelSerializer):
         required=True,
         validators=[username_is_unique]
     )
-
-    class Meta:
-        model = User
-        fields = (
-            'username', 'email', 'first_name', 'last_name', 'bio', 'role'
-        )
-
-
-class UserRoleReadOnly(serializers.ModelSerializer):
-    username = serializers.CharField(
-        required=True,
-        validators=[username_is_unique]
-    )
-    role = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
