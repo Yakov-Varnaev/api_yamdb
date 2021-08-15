@@ -1,7 +1,7 @@
 import uuid
 
-from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, permissions
@@ -11,8 +11,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import UserModelSerializer, SignUpSerializer, CodeSerializer
-from .permissions import IsAdmin, OnlyAdminCanChangeRole
+from .permissions import IsAdmin
+from .serializers import (CodeSerializer,
+                          SignUpSerializer,
+                          UserModelSerializer)
 
 User = get_user_model()
 
@@ -23,24 +25,25 @@ class UserModelViewset(ModelViewSet):
     permission_classes = [permissions.IsAdminUser | IsAdmin]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
+    lookup_field = 'username'
 
     @action(
         methods=('get', 'patch'),
         detail=False, url_path='me', url_name='me',
         permission_classes=[
             permissions.IsAuthenticated,
-            OnlyAdminCanChangeRole
         ]
     )
     def user_own_profile(self, request):
         instance = request.user
         serializer = self.get_serializer(instance=instance)
         if self.request.method == 'PATCH':
-            print(request.user.role)
             self.check_object_permissions(request, instance)
             serializer = self.get_serializer(
                 instance=instance, data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
+            if request.user.role != User.UserRole.ADMIN:
+                serializer.fields['role'].read_only = True
+            serializer.is_valid()
             serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
