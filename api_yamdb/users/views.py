@@ -23,7 +23,6 @@ class UserModelViewset(ModelViewSet):
     serializer_class = UserModelSerializer
     queryset = User.objects.filter(is_active=True)
     permission_classes = [permissions.IsAdminUser | IsAdmin]
-    filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
 
