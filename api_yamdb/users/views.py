@@ -1,7 +1,7 @@
 import uuid
 
-from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, permissions
@@ -11,10 +11,10 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import (UserModelSerializer,
-                          SignUpSerializer,
-                          CodeSerializer)
 from .permissions import IsAdmin
+from .serializers import (CodeSerializer,
+                          SignUpSerializer,
+                          UserModelSerializer)
 
 User = get_user_model()
 
