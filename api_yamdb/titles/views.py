@@ -5,6 +5,7 @@ from .models import Category
 from .serializers import CategorySerializer
 from .permissions import IsAdminOrReadOnly
 
+
 class CategoryViewSet(mixins.ListModelMixin,
                       mixins.DestroyModelMixin,
                       mixins.CreateModelMixin,
@@ -12,5 +13,5 @@ class CategoryViewSet(mixins.ListModelMixin,
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'
-    permission_classes = [IsAdminOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly]
     search_fields = ('name',)

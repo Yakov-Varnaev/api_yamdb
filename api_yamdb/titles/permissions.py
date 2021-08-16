@@ -2,7 +2,8 @@ from rest_framework import permissions
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
+        print('I was called')
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.role == request.user.UserRole.ADMIN
+        return request.user.is_admin()
