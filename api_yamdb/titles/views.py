@@ -2,14 +2,17 @@ from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from .models import Category, Genre, Title
-from .serializers import CategorySerializer, GenreSerializer, TitleSerializer, TitleCreateSerializer
+from .serializers import (CategorySerializer,
+                          GenreSerializer,
+                          TitleSerializer,
+                          TitleCreateSerializer)
 from .permissions import IsAdminOrReadOnly
 
 
 class RetrieveCreateDeleteViewSet(mixins.ListModelMixin,
-                                mixins.DestroyModelMixin,
-                                mixins.CreateModelMixin,
-                                GenericViewSet):
+                                  mixins.DestroyModelMixin,
+                                  mixins.CreateModelMixin,
+                                  GenericViewSet):
     pass
 
 
