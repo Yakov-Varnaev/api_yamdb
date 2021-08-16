@@ -5,11 +5,14 @@ from .models import Category
 from .serializers import CategorySerializer
 from .permissions import IsAdminOrReadOnly
 
+class RetrieveCreateDeleteViewSet(mixins.ListModelMixin,
+                                mixins.DestroyModelMixin,
+                                mixins.CreateModelMixin,
+                                GenericViewSet):
+    pass
 
-class CategoryViewSet(mixins.ListModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.CreateModelMixin,
-                      GenericViewSet):
+
+class CategoryViewSet(RetrieveCreateDeleteViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     lookup_field = 'slug'
