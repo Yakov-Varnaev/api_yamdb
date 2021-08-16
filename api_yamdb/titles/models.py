@@ -11,3 +11,15 @@ class Category(models.Model):
         max_length=50,
         unique=True
     )
+
+
+class Genre(models.Model):
+    name = models.CharField(
+        verbose_name='genre name',
+        max_length=256,
+    )
+    slug = models.SlugField(
+        verbose_name='genre slug',
+        max_length=50,
+        unique=True
+    )
