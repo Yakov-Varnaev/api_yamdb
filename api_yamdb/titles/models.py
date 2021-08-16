@@ -12,6 +12,9 @@ class Category(models.Model):
         unique=True
     )
 
+    class Meta:
+        verbose_name_plural = 'Categories'
+
 
 class Genre(models.Model):
     name = models.CharField(
@@ -33,7 +36,6 @@ class Title(models.Model):
     year = models.IntegerField(
         verbose_name='year of issue',
     )
-    # rating, description, genre, category
     rating = models.IntegerField(
         blank=True,
         null=True
@@ -46,7 +48,9 @@ class Title(models.Model):
         to=Genre,
         related_name='titles',
     )
-    category = models.ManyToManyField(
+    category = models.ForeignKey(
         to=Category,
-        related_name='titles'
+        related_name='titles',
+        on_delete=models.SET_NULL,
+        null=True
     )

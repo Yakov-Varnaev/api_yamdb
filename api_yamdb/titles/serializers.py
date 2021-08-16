@@ -17,9 +17,27 @@ class GenreSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
 
+class TitleCreateSerializer(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        many=True,
+        queryset=Genre.objects.all()
+    )
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all(),
+        many=False
+    )
+    description = serializers.CharField(required=False)
+
+    class Meta:
+        model = Title
+        fields = '__all__'
+
+
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
-    category = CategorySerializer(many=True)
+    category = CategorySerializer(many=False)
 
     class Meta:
         model = Title
