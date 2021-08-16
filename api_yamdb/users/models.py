@@ -36,3 +36,6 @@ class User(AbstractUser):
 
     def is_admin(self):
         return self.role == self.UserRole.ADMIN
+
+    def is_moderator(self):
+        return self.role == self.UserRole.MODERATOR
