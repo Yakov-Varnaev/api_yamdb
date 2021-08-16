@@ -8,6 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'slug')
     empty_display = '--empty--'
 
+
 class GenreAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'slug')
     search_fields = ('name', 'slug')
