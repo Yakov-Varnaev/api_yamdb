@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, permissions
+from rest_framework import status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +23,6 @@ class UserModelViewset(ModelViewSet):
     serializer_class = UserModelSerializer
     queryset = User.objects.filter(is_active=True)
     permission_classes = [permissions.IsAdminUser | IsAdmin]
-    filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'
 

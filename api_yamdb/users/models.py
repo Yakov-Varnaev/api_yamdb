@@ -33,3 +33,6 @@ class User(AbstractUser):
         unique=True,
         default=uuid.uuid4,
     )
+
+    def is_admin(self):
+        return self.role == self.UserRole.ADMIN
