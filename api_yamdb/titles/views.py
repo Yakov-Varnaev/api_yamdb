@@ -1,9 +1,9 @@
 from django.db.models import query
 from rest_framework import mixins, permissions
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from .models import Category, Genre
-from .serializers import CategorySerializer, GenreSerializer
+from .models import Category, Genre, Title
+from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
 from .permissions import IsAdminOrReadOnly
 
 
@@ -34,3 +34,12 @@ class GenreViewSet(RetrieveCreateDeleteViewSet):
         IsAdminOrReadOnly
     ]
     search_fields = ('name',)
+
+
+class TitleViewSet(ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAdminOrReadOnly
+    ]
