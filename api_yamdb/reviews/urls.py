@@ -4,11 +4,17 @@ from django.urls import path, include
 from .views import ReviewViewSet, CommentViewSet
 
 router = routers.DefaultRouter()
-router.register(r'titles/(?P<title_id>\d+)/rewiews', ReviewViewSet)
 router.register(
-    r'titles/(?P<title_id>\d+)/rewiews/(?P<review_id>\d+)', CommentViewSet
+    r'titles/(?P<title_id>\d+)/reviews',
+    ReviewViewSet,
+    basename='titles'
+)
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)',
+    CommentViewSet,
+    basename='comments'
 )
 
 urlpatterns = [
-    path('v1/', include(router.urls)),
+    path('', include(router.urls)),
 ]
