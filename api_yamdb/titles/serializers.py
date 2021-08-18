@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.db.models import Avg
+# from django.db.models import Avg
 
 from .models import Category, Genre, Title
 
@@ -40,7 +40,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer(many=False)
-    rating = serializers.SerializerMethodField()
+    # rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
