@@ -47,4 +47,6 @@ class TitleSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         scores = obj.reviews.values_list('score', flat=True)
+        if len(scores) == 0:
+            return None
         return round(mean(scores), 1)
