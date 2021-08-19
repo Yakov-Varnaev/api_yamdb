@@ -9,11 +9,21 @@ User = get_user_model()
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews')
+        to=Title,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
     score = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(10)]
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(10)
+        ]
     )
     pub_date = models.DateTimeField(auto_now_add=True)
 
@@ -31,10 +41,14 @@ class Review(models.Model):
 
 class Comment(models.Model):
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
     pub_date = models.DateTimeField(auto_now_add=True)
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments')
-
-    def __str__(self):
-        return self.text
+        to=Review,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )

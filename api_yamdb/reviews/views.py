@@ -1,10 +1,9 @@
 from rest_framework import viewsets, permissions
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import PermissionDenied
 
 from .serializers import (ReviewSerializer, CommentSerializer)
 from .permissions import AuthorModeratorAdminOrReadOnly
-from .models import Review, Comment
+from .models import Review
 from titles.models import Title
 
 
