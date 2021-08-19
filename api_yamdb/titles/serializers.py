@@ -1,5 +1,5 @@
-from statistics import mean
 from rest_framework import serializers
+from statistics import mean
 
 from .models import Category, Genre, Title
 
