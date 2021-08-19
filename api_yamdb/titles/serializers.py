@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from statistics import mean
 
 from .models import Category, Genre, Title
 
@@ -38,7 +39,14 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer(many=False)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = '__all__'
+
+    def get_rating(self, obj):
+        scores = obj.reviews.values_list('score', flat=True)
+        if len(scores) == 0:
+            return None
+        return round(mean(scores), 1)

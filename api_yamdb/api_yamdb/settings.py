@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'users.apps.UsersConfig',
     'titles.apps.TitlesConfig',
+    'reviews.apps.ReviewsConfig'
 ]
 
 MIDDLEWARE = [
