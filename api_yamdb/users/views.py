@@ -22,7 +22,7 @@ User = get_user_model()
 class UserModelViewset(ModelViewSet):
     serializer_class = UserModelSerializer
     queryset = User.objects.filter(is_active=True)
-    permission_classes = [permissions.IsAdminUser | IsAdmin]
+    permission_classes = [IsAdmin]
     search_fields = ('username',)
     lookup_field = 'username'
 
@@ -36,14 +36,15 @@ class UserModelViewset(ModelViewSet):
     def user_own_profile(self, request):
         instance = request.user
         serializer = self.get_serializer(instance=instance)
-        if self.request.method == 'PATCH':
-            self.check_object_permissions(request, instance)
-            serializer = self.get_serializer(
-                instance=instance, data=request.data, partial=True)
-            if request.user.role != User.UserRole.ADMIN:
-                serializer.fields['role'].read_only = True
-            serializer.is_valid()
-            serializer.save()
+        if self.request.method == 'GET':
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        self.check_object_permissions(request, instance)
+        serializer = self.get_serializer(
+            instance=instance, data=request.data, partial=True)
+        if request.user.role != User.UserRole.ADMIN:
+            serializer.fields['role'].read_only = True
+        serializer.is_valid()
+        serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
