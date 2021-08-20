@@ -2,6 +2,7 @@ import uuid
 
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import status, permissions
@@ -14,13 +15,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import IsAdmin
 from .serializers import (CodeSerializer,
                           SignUpSerializer,
-                          UserModelSerializer)
+                          UserModelSerilzer)
 
 User = get_user_model()
 
 
 class UserModelViewset(ModelViewSet):
-    serializer_class = UserModelSerializer
+    serializer_class = UserModelSerilzer
     queryset = User.objects.filter(is_active=True)
     permission_classes = [IsAdmin]
     search_fields = ('username',)
@@ -38,12 +39,11 @@ class UserModelViewset(ModelViewSet):
         serializer = self.get_serializer(instance=instance)
         if self.request.method == 'GET':
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        self.check_object_permissions(request, instance)
         serializer = self.get_serializer(
             instance=instance, data=request.data, partial=True)
-        if request.user.role != User.UserRole.ADMIN:
+        if not request.user.is_admin:
             serializer.fields['role'].read_only = True
-        serializer.is_valid()
+        serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -53,30 +53,28 @@ class SignupView(APIView):
 
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            email = serializer.validated_data.get('email')
-            username = serializer.validated_data.get('username')
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data.get('email')
+        username = serializer.validated_data.get('username')
+        user = User.objects.create(
+            email=email,
+            username=username,
+            is_active=False,
+        )
 
-            confirmation_code = uuid.uuid4()
+        confirmation_code = default_token_generator.make_token(user)
 
-            User.objects.create(
-                email=email,
-                username=username,
-                confirmation_code=confirmation_code,
-                is_active=False,
-            )
-            send_mail(
-                'Email confirmation',
-                f'Your confirmation code: {confirmation_code}',
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-                fail_silently=True,
-            )
-            return Response(
-                serializer.data,
-                status=status.HTTP_200_OK
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BADREQUEST)
+        send_mail(
+            'Email confirmation',
+            f'Your confirmation code: {confirmation_code}',
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=True,
+        )
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
 
 
 class CodeConfirmView(APIView):
@@ -84,14 +82,15 @@ class CodeConfirmView(APIView):
 
     def post(self, *args, **kwargs):
         serializer = CodeSerializer(data=self.request.data)
-        if serializer.is_valid(raise_exception=True):
+        if serializer.is_valid():
             username = serializer.validated_data.get('username')
-            confirmation_code = serializer.validated_data.get(
+            token = serializer.validated_data.get(
                 'confirmation_code')
+
 
             user = get_object_or_404(User, username=username)
 
-            if f'{user.confirmation_code}' != confirmation_code:
+            if not default_token_generator.check_token(user, token):
                 return Response(
                     'Wrong confirmation code!', status.HTTP_400_BAD_REQUEST
                 )
@@ -103,6 +102,6 @@ class CodeConfirmView(APIView):
                 {'token': str(token.access_token)},
                 status.HTTP_200_OK)
         return Response(
-            data={'response': 'Something went wrong.'},
+            data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
