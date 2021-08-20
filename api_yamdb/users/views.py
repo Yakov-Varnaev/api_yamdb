@@ -15,13 +15,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import IsAdmin
 from .serializers import (CodeSerializer,
                           SignUpSerializer,
-                          UserModelSerilzer)
+                          UserSerializer)
 
 User = get_user_model()
 
 
 class UserModelViewset(ModelViewSet):
-    serializer_class = UserModelSerilzer
+    serializer_class = UserSerializer
     queryset = User.objects.filter(is_active=True)
     permission_classes = [IsAdmin]
     search_fields = ('username',)

@@ -6,7 +6,7 @@ from .validators import username_is_not_me, username_is_unique
 User = get_user_model()
 
 
-class UserModelSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         required=True,
         validators=[username_is_unique]
