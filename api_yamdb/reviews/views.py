@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, serializers
 
 from .serializers import ReviewSerializer, CommentSerializer
 from .models import Review
@@ -22,6 +22,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, id=title_id)
+        if Review.objects.filter(
+            author=self.request.user,
+            title=title
+        ).exists():
+            raise serializers.ValidationError(
+                detail=f'You have already reviewed {title.name}'
+            )
         serializer.save(author=self.request.user, title=title)
 
 
