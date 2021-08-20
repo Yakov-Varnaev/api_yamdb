@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions
 
 from .serializers import ReviewSerializer, CommentSerializer
-from .permissions import AuthorModeratorAdminOrReadOnly
 from .models import Review
+from api_yamdb.permissions import AuthorModeratorAdminOrReadOnly
 from titles.models import Title
 
 

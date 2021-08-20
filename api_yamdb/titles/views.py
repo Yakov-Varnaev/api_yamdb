@@ -1,12 +1,14 @@
+from django.db.models import Avg
 from rest_framework import mixins, permissions
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from .filters import TitleFilter
 from .models import Category, Genre, Title
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleSerializer,
                           TitleCreateSerializer)
-from .permissions import IsAdminOrReadOnly
+from api_yamdb.permissions import IsAdminOrReadOnly
 
 
 class RetrieveCreateDeleteViewSet(mixins.ListModelMixin,
@@ -45,6 +47,7 @@ class TitleViewSet(ModelViewSet):
         permissions.IsAuthenticatedOrReadOnly,
         IsAdminOrReadOnly
     ]
+    filterset_class = TitleFilter
 
     def get_serializer(self, *args, **kwargs):
         if self.action in ('create', 'update', 'partial_update'):
@@ -52,24 +55,9 @@ class TitleViewSet(ModelViewSet):
         return self.serializer_class(*args, **kwargs)
 
     def get_queryset(self):
-        genre_category_filters = {}
-        genre_category_filters['genre__slug'] = (
-            self.request.query_params.get('genre')
-        )
-        genre_category_filters['category__slug'] = (
-            self.request.query_params.get('category')
-        )
-        genre_category_filters['name__contains'] = (
-            self.request.query_params.get('name')
-        )
-        genre_category_filters = {
-            k: v for k, v in genre_category_filters.items()
-            if v is not None
-        }
-        print(genre_category_filters)
         return (
             Title.objects
             .prefetch_related('genre')
             .select_related('category')
-            .filter(**genre_category_filters)
+            .annotate(rating_avg=Avg('reviews__score'))
         )

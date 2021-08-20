@@ -13,6 +13,7 @@ class Category(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
 
@@ -26,6 +27,10 @@ class Genre(models.Model):
         max_length=50,
         unique=True
     )
+
+    class Meta:
+        verbose_name = 'Genre'
+        verbose_name_plural = 'Genres'
 
 
 class Title(models.Model):
@@ -45,12 +50,18 @@ class Title(models.Model):
         max_length=1000,
     )
     genre = models.ManyToManyField(
+        verbose_name='title genre',
         to=Genre,
         related_name='titles',
     )
     category = models.ForeignKey(
+        verbose_name='title category',
         to=Category,
         related_name='titles',
         on_delete=models.SET_NULL,
         null=True
     )
+
+    class Meta:
+        verbose_name = 'Title'
+        verbose_name_plural = 'Titles'

@@ -28,6 +28,8 @@ class Review(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -52,3 +54,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
+
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'

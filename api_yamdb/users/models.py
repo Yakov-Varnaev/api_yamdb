@@ -34,8 +34,14 @@ class User(AbstractUser):
         default=uuid.uuid4,
     )
 
+    class Meta:
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
+
+    @property
     def is_admin(self):
         return self.role == self.UserRole.ADMIN
 
+    @property
     def is_moderator(self):
         return self.role == self.UserRole.MODERATOR
