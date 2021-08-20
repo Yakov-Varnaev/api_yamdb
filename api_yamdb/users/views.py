@@ -1,5 +1,3 @@
-import uuid
-
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -86,7 +84,6 @@ class CodeConfirmView(APIView):
             username = serializer.validated_data.get('username')
             token = serializer.validated_data.get(
                 'confirmation_code')
-
 
             user = get_object_or_404(User, username=username)
 
