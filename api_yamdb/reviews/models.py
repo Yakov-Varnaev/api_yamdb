@@ -9,23 +9,30 @@ User = get_user_model()
 
 class Review(models.Model):
     title = models.ForeignKey(
+        verbose_name='title',
         to=Title,
         on_delete=models.CASCADE,
         related_name='reviews'
     )
-    text = models.TextField()
+    text = models.TextField(
+        verbose_name='reviews text',
+    )
     author = models.ForeignKey(
+        verbose_name='reviews author',
         to=User,
         on_delete=models.CASCADE,
-        related_name='reviews'
+        related_name='reviews',
     )
     score = models.IntegerField(
+        verbose_name=' authors mark',
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
-    pub_date = models.DateTimeField(auto_now_add=True)
+    pub_date = models.DateTimeField(
+        verbose_name='date of publication',
+        auto_now_add=True)
 
     class Meta:
         verbose_name = 'Review'
@@ -42,14 +49,20 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
-    text = models.TextField()
+    text = models.TextField(
+        verbose_name='comment text'
+    )
     author = models.ForeignKey(
+        verbose_name='comment author',
         to=User,
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    pub_date = models.DateTimeField(auto_now_add=True)
+    pub_date = models.DateTimeField(
+        verbose_name='date of publication',
+        auto_now_add=True)
     review = models.ForeignKey(
+        verbose_name='comment to review',
         to=Review,
         on_delete=models.CASCADE,
         related_name='comments'
