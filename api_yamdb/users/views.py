@@ -33,16 +33,14 @@ class UserModelViewset(ModelViewSet):
         ]
     )
     def user_own_profile(self, request):
-        instance = request.user
-        serializer = self.get_serializer(instance=instance)
+        user = request.user
+        serializer = self.get_serializer(instance=user)
         if self.request.method == 'GET':
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         serializer = self.get_serializer(
-            instance=instance, data=request.data, partial=True)
-        if not request.user.is_admin:
-            serializer.fields['role'].read_only = True
+            instance=user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(role=user.role, partial=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 

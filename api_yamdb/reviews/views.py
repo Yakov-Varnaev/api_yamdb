@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django.utils.functional import cached_property
+
 from rest_framework import viewsets, permissions, serializers
 
 from .serializers import ReviewSerializer, CommentSerializer
@@ -14,14 +16,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
         AuthorModeratorAdminOrReadOnly,
     ]
 
-    def get_queryset(self):
+    @cached_property
+    def get_title(self):
         title_id = self.kwargs.get('title_id')
-        title = get_object_or_404(Title, pk=title_id)
-        return title.reviews.all()
+        return get_object_or_404(Title, pk=title_id)
+
+    def get_queryset(self):
+        return self.get_title.reviews.all()
 
     def perform_create(self, serializer):
-        title_id = self.kwargs.get('title_id')
-        title = get_object_or_404(Title, id=title_id)
+        title = self.get_title
+
         if Review.objects.filter(
             author=self.request.user,
             title=title
