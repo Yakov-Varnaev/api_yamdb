@@ -17,16 +17,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
     ]
 
     @cached_property
-    def get_title(self):
+    def title(self):
         title_id = self.kwargs.get('title_id')
         return get_object_or_404(Title, pk=title_id)
 
     def get_queryset(self):
-        return self.get_title.reviews.all()
+        return self.title.reviews.all()
 
     def perform_create(self, serializer):
-        title = self.get_title
-
+        title = self.title
         if Review.objects.filter(
             author=self.request.user,
             title=title
@@ -44,12 +43,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         AuthorModeratorAdminOrReadOnly,
     ]
 
-    def get_queryset(self):
+    @cached_property
+    def review(self):
         review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Review, id=review_id)
-        return review.comments.all()
+        return get_object_or_404(Review, id=review_id)
+
+    def get_queryset(self):
+        return self.review.comments.all()
 
     def perform_create(self, serializer):
-        review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Review, id=review_id)
-        serializer.save(author=self.request.user, review=review)
+        serializer.save(author=self.request.user, review=self.review)
