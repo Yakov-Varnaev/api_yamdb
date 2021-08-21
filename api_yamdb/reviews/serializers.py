@@ -22,11 +22,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only=True,
         default=serializers.CurrentUserDefault()
     )
-    review = serializers.PrimaryKeyRelatedField(
-        required=False,
-        read_only=True
-    )
 
     class Meta:
         model = Comment
-        fields = '__all__'
+        exclude = ('review',)
