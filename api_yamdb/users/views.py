@@ -80,25 +80,25 @@ class CodeConfirmView(APIView):
 
     def post(self, *args, **kwargs):
         serializer = CodeSerializer(data=self.request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data.get('username')
-            token = serializer.validated_data.get(
-                'confirmation_code')
-
-            user = get_object_or_404(User, username=username)
-
-            if not default_token_generator.check_token(user, token):
-                return Response(
-                    'Wrong confirmation code!', status.HTTP_400_BAD_REQUEST
-                )
-
-            user.is_active = True
-            user.save()
-            token = RefreshToken.for_user(user)
+        if not serializer.is_valid():
             return Response(
-                {'token': str(token.access_token)},
-                status.HTTP_200_OK)
+                data=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        username = serializer.validated_data.get('username')
+        token = serializer.validated_data.get(
+            'confirmation_code')
+
+        user = get_object_or_404(User, username=username)
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                'Wrong confirmation code!', status.HTTP_400_BAD_REQUEST
+            )
+
+        user.is_active = True
+        user.save()
+        token = RefreshToken.for_user(user)
         return Response(
-            data=serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            {'token': str(token.access_token)},
+            status.HTTP_200_OK)
