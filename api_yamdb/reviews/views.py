@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 
-from rest_framework import viewsets, permissions, serializers
+from rest_framework import viewsets, permissions
 
 from .serializers import ReviewSerializer, CommentSerializer
 from .models import Review
@@ -26,13 +26,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         title = self.title
-        if Review.objects.filter(
-            author=self.request.user,
-            title=title
-        ).exists():
-            raise serializers.ValidationError(
-                detail=f'You have already reviewed {title.name}'
-            )
         serializer.save(author=self.request.user, title=title)
 
 
