@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .permissions import IsAdmin
+from api_yamdb.permissions import IsAdmin
 from .serializers import (CodeSerializer,
                           SignUpSerializer,
                           UserSerializer)
@@ -21,7 +21,7 @@ User = get_user_model()
 class UserModelViewset(ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.filter(is_active=True)
-    permission_classes = [IsAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsAdmin]
     search_fields = ('username',)
     lookup_field = 'username'
 
