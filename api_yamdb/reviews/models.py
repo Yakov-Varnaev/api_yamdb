@@ -15,10 +15,10 @@ class Review(models.Model):
         related_name='reviews'
     )
     text = models.TextField(
-        verbose_name='reviews text',
+        verbose_name='review text',
     )
     author = models.ForeignKey(
-        verbose_name='reviews author',
+        verbose_name='review author',
         to=User,
         on_delete=models.CASCADE,
         related_name='reviews',

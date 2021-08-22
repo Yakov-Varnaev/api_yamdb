@@ -39,7 +39,7 @@ class Title(models.Model):
         max_length=256
     )
     year = models.IntegerField(
-        verbose_name='year of issue',
+        verbose_name='publication date',
     )
     rating = models.IntegerField(
         blank=True,
