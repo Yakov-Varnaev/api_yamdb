@@ -21,27 +21,10 @@
 # Описание проекта
 [Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
 
-Данный проект является тестовым заданием для компании [Secure-T](https://edu.secure-t.ru).
 
 ## Функционал
 [Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
 
-1. Регистрация и аутентификация пользователей выполнена с использованием djoser
-2. CRUD постов
-3. CRUD комментариев, комментарии обладают древовидной структурой
-пример:
-```
-комментарий 1 уровня
-  комментарий 2 уровня
-      комментарий 3 уровня
-          комментарий 4 уровня
-      комментарий 3 уровня
-  комментарий 2 уровня
-```
-4. Возможность публиковать посты в группы
-5. Просмотр постов опубликованных в группах
-6. Возможность подписываться на других пользователей
-7. Просмотр постов пользователей на которых подписан юзер
 
 # Запуск проекта
 [Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
@@ -52,7 +35,7 @@
 git clone https://github.com/Yakov-Varnaev/api_yamdb.git
 ```
 
-2. Перейдите в директорию shop_api_smart_des
+2. Перейдите в директорию api_yamdb/
 ```
 cd api_yamdb/
 ```
@@ -71,14 +54,15 @@ pip install -r requirements.txt
 ```
 
 5. Выполните миграции
-Для этого необходимо перейти в директорию secure_blog/secure_blog/.
-Проверьте, что вы в нужной директории с помощью команды `ls`:
+Для этого необходимо перейти в директорию api_yamdb/api_yamdb/.
 ```
 ~ cd api_yamdb/
 ```
-Выполните команду 
+Выполните мграции
 ```
-python3 manage.py migrate
+python3 manage.py migrate users
+python3 manage.py migrate titles
+python3 manage.py migrate reviews
 ```
 
 6. Запустите сервер
