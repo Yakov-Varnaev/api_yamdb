@@ -20,6 +20,7 @@
 # Описание проекта
 [Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
 
+Данные проект был выполнен в ходе курсов python-developer от Яндекс.Практикум.
 
 ## Функционал
 [Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
