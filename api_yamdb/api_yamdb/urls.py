@@ -28,4 +28,3 @@ urlpatterns = [
     path('api/v1/', include('titles.urls')),
     path('api/v1/', include('reviews.urls')),
 ]
-# /api/v1/titles/1/reviews/
