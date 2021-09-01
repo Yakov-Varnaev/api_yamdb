@@ -1,33 +1,32 @@
 # api_yamdb
-# secure_blog
 
 # Оглавление
-1. [Описание проекта](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#описание-проекта)
-     1. [Функционал](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#функционал)
-2. [Запуск проекта](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#запуск-проекта)
-3. [Создание суперпользователя](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#создание-суперпользователя)
-4. [Документация](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#документация)
-     1. [Авторизация внутри swagger](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#Авторизация-внутри-swagger)
-5. [CURL команды](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#curl-команды)
-     1. [Регистрация](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#регистрация)
-     2. [Получения токена](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#получения-токена)
-     3. [Информация о пользователе](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#информация-о-пользователе)
-     4. [Создания поста](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#создания-поста)
-     5. [Создание комментария](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#создание-комментария)
-     6. [Подписка на пользователя](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#подписка-на-пользователя)
-6. [TODO](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#todo)
+1. [Описание проекта](https://github.com/Yakov-Varnaev/api_yamdb/blob/master/README.md#описание-проекта)
+     1. [Функционал](https://github.com/Yakov-Varnaev/api_yamdb/blob/master/README.md#функционал)
+2. [Запуск проекта](https://github.com/Yakov-Varnaev/api_yamdb/blob/master/README.md#запуск-проекта)
+3. [Создание суперпользователя](https://github.com/Yakov-Varnaev/api_yamdb/blob/master/README.md#создание-суперпользователя)
+4. [Документация](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#документация)
+     1. [Авторизация внутри swagger](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#Авторизация-внутри-swagger)
+5. [CURL команды](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#curl-команды)
+     1. [Регистрация](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#регистрация)
+     2. [Получения токена](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#получения-токена)
+     3. [Информация о пользователе](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#информация-о-пользователе)
+     4. [Создания поста](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#создания-поста)
+     5. [Создание комментария](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#создание-комментария)
+     6. [Подписка на пользователя](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#подписка-на-пользователя)
+6. [TODO](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#todo)
 
 
 # Описание проекта
-[Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
+[Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
 
 
 ## Функционал
-[Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
+[Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
 
 
 # Запуск проекта
-[Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
+[Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
 
 
 1. Склонируйте данный репозиторий
@@ -83,7 +82,7 @@ Quit the server with CONTROL-C.
 ```
 
 # Создание суперпользователя
-[Оглавление](https://github.com/Yakov-Varnaev/secure_blog/blob/main/README.md#оглавление)
+[Оглавление](https://github.com/Yakov-Varnaev/api_yamdb/blob/main/README.md#оглавление)
 
 Вам может пригодиться супер-пользователь - он позволяет быстро и удобно создавать пользователей, посты, комментарии и другие сущности.
 Для этого вам будет, находясь в директории `secure_blog/secure_blog/`, выполнить следующие команды:
